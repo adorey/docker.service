@@ -25,6 +25,8 @@ services:
         TIMEZONE: ${TIMEZONE}
         PHP_IMG_VERSION: ${PHP_IMG_VERSION}
     container_name: ${SERVICE_NAME}-php
+    ports:
+      -  ${PHP_LOCAL_PORT}:9000
     networks:
       - service-network
 
@@ -59,7 +61,7 @@ services:
     networks:
       - service-network
 
-  mongodb:
+  mongo:
     image: ${ARCH}/mongo:${MONGODB_IMG_VERSION}
     container_name: ${SERVICE_NAME}-mongodb
     ports:
@@ -81,6 +83,8 @@ services:
       - ${NGINX_SSL_LOCAL_PORT}:443
     networks:
       - service-network
+    environment:
+      - SERVICE_NAME=${SERVICE_NAME}
     volumes:
       - ./config/nginx/${ENV}.nginx.conf:/etc/nginx/nginx.conf
       - ./config/nginx/mime.types:/etc/nginx/mime.types
