@@ -1,0 +1,23 @@
+version: '3.9'
+
+services:
+  nginx:
+    restart: always
+    image: ${ARCH}/nginx:latest
+    container_name: ${SERVICE_NAME}-nginx
+    ports:
+      - ${NGINX_LOCAL_PORT}:80
+      - ${NGINX_SSL_LOCAL_PORT}:443
+    networks:
+      - service-network
+    profiles:
+      - all
+      - http-server
+      - nginx
+    environment:
+      - SERVICE_NAME=${SERVICE_NAME}
+    volumes:
+      - ../config/nginx/${ENV}.nginx.conf:/etc/nginx/nginx.conf
+      - ../config/nginx/mime.types:/etc/nginx/mime.types
+      - ../datas/logs/nginx:/var/log/nginx
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"

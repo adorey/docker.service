@@ -1,0 +1,19 @@
+version: '3.9'
+
+services:
+  redis:
+    image: ${ARCH}/redis:${REDIS_IMG_VERSION}
+    container_name: ${SERVICE_NAME}-redis
+    ports:
+      - ${REDIS_LOCAL_PORT}:6379
+    volumes:
+      - ../config/redis.conf:/redis.conf
+      - ../datas/databases/redis/datas:/data
+    command: [ "redis-server", "/redis.conf" ]
+    networks:
+      - service-network
+    profiles:
+      - all
+      - database
+      - cache
+      - redis

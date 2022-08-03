@@ -1,11 +1,11 @@
 <VirtualHost *:80>
-        ServerAdmin aurelien.dorey@gmail.com
-        DocumentRoot "/var/www/$SERVICE_NAME/$ROOT_PATH"
         ServerName $SERVICE_HOST
-        ErrorLog "/var/log/apache2/$SERVICE_NAME-error_log"
-        CustomLog "/var/log/apache2/$SERVICE_NAME-access_log" common
+        ServerAdmin $APP_MAINTAINER_EMAIL
+        DocumentRoot "/var/www/$SERVICE_NAME/$ROOT_PATH"
+        ErrorLog "|/var/log/apache2/$SERVICE_NAME-error_log 86400" common
+        CustomLog "|/var/log/apache2/$SERVICE_NAME-access_log 86400" common
 
-        ProxyPassMatch ^/(.*\.php)$ fcgi://php:9000/var/www/$SERVICE_NAME/$ROOT_PATH/$1
+        ProxyPassMatch ^/(.*\.php)$ fcgi://php:9000/var/www/$SERVICE_NAME/$SERVICE_PATH/$1
 
         <Directory "/var/www/$SERVICE_NAME/$SERVICE_PATH">
                 Options Indexes FollowSymLinks MultiViews Indexes
@@ -15,6 +15,6 @@
                 Allow from all
                 RewriteEngine On
                 RewriteCond %{REQUEST_FILENAME} !-f
-                RewriteRule ^(.*)$ app.php [QSA,L]
+                RewriteRule ^(.*)$ $FCGI_FILE [QSA,L]
         </Directory>
 </VirtualHost>

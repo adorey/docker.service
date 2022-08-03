@@ -1,0 +1,19 @@
+version: '3.9'
+
+services:
+  mongodb:
+    image: ${ARCH}/mongo:${MONGODB_IMG_VERSION}
+    container_name: ${SERVICE_NAME}-mongodb
+    ports:
+      - ${LOCAL_MONGODB_PORT}:27017
+    volumes:
+      - ${MONGODB_LOCAL_DATA_DIR}:/datas/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGODB_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_PASSWD}
+    networks:
+      - service-network
+    profiles:
+      - all
+      - mongodb
+      - database

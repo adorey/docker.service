@@ -1,0 +1,12 @@
+version: '3.9'
+
+services:
+  memcached:
+    image: ${ARCH}/memcached:${MEMCACHED_IMG_VERSION}
+    container_name: ${SERVICE_NAME}-memcached
+    networks:
+      - service-network
+    profiles:
+      - all
+      - cache
+      - memcache

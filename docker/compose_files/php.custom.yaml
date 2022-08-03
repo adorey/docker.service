@@ -1,0 +1,26 @@
+version: '3.9'
+
+services:
+  php:
+    build:
+      context: ../php.custom
+      args:
+        TIMEZONE: ${TIMEZONE}
+        NEED_REDIS: ${NEED_REDIS}
+        NEED_XDEBUG: ${NEED_XDEBUG}
+        SERVICE_NAME: ${SERVICE_NAME}
+        NEED_MEMCACHE: ${NEED_MEMCACHE}
+        PHP_IMG_VERSION: ${PHP_IMG_VERSION}
+        APP_MAINTAINER_EMAIL: ${APP_MAINTAINER_EMAIL}
+        APP_MAINTAINER_FULL_NAME: ${APP_MAINTAINER_FULL_NAME}
+    container_name: ${SERVICE_NAME}-php
+    ports:
+      -  ${PHP_LOCAL_PORT}:9000
+    volumes:
+      - ${SERVICE_APP_PATH}:/var/www/${SERVICE_NAME}
+    networks:
+      - service-network
+    profiles:
+      - all
+      - php
+      - php-custom

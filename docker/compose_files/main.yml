@@ -1,0 +1,8 @@
+version: '3.9'
+
+networks:
+  service-network:
+    name: ${SERVICE_NAME}-network
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

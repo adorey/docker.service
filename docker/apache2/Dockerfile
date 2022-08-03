@@ -1,6 +1,13 @@
 FROM debian:buster-slim
 
-MAINTAINER Aurélien DOREY <aurelien.dorey@gmail.com>
+ARG FCGI_FILE
+ARG APACHE_USER
+ARG APACHE_GROUP
+ARG SERVICE_PATH
+ARG SERVICE_HOST
+ARG SERVICE_NAME
+ARG APP_MAINTAINER_EMAIL
+ARG APP_MAINTAINER_FULL_NAME
 
 # Install apache and supplimentary programs.gettext-base allow us to use envsubst to
 # replace environment in files, curl is for debugging the container.
@@ -16,11 +23,19 @@ RUN a2enmod proxy && a2enmod proxy_fcgi && a2dismod mpm_event && a2enmod mpm_wor
 RUN a2enmod rewrite
 
 # Manually set up the apache environment variables
-ENV APACHE_RUN_USER ubuntu
-ENV APACHE_RUN_GROUP ubuntu
+ENV APACHE_RUN_USER ${APACHE_USER}
+ENV APACHE_RUN_GROUP ${APACHE_GROUP}
+
 ENV APACHE_LOG_DIR /var/log/apache2
 ENV APACHE_LOCK_DIR /var/lock/apache2
 ENV APACHE_PID_FILE /var/run/apache2.pid
+
+ENV FCGI_FILE ${FCGI_FILE}
+ENV SERVICE_PATH ${SERVICE_PATH}
+ENV SERVICE_HOST ${SERVICE_HOST}
+ENV SERVICE_NAME ${SERVICE_NAME}
+ENV APP_MAINTAINER_EMAIL ${APP_MAINTAINER_EMAIL}
+ENV APP_MAINTAINER_FULL_NAME ${APP_MAINTAINER_FULL_NAME}
 
 # Expose apache.
 EXPOSE 80
@@ -29,7 +44,8 @@ EXPOSE 80
 ADD sites-available/default.template /etc/apache2/sites-available/default.template
 
 # create conf from template + environment and enable it
-RUN /bin/bash -c 'envsubst < /etc/apache2/sites-available/default.template > /etc/apache2/sites-available/default.conf' \
+RUN /bin/bash -c \
+    'envsubst < /etc/apache2/sites-available/default.template > /etc/apache2/sites-available/default.conf' \
     && a2ensite default.conf
 
 # By default start up apache in the foreground, override with /bin/bash for interative.
