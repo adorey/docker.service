@@ -86,5 +86,5 @@ RUN if [ ${NEED_REDIS} = true ] ; then cd phpredis \
     && make install ; fi
 RUN if [ ${NEED_REDIS} = true ] ; then docker-php-ext-enable redis ; fi
 
-# application directory pas (inside container)
+# application directory path (inside container)
 WORKDIR /var/www/${SERVICE_NAME}

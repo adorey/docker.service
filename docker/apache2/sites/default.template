@@ -1,9 +1,9 @@
 <VirtualHost *:80>
         ServerName $SERVICE_HOST
         ServerAdmin $APP_MAINTAINER_EMAIL
-        DocumentRoot "/var/www/$SERVICE_NAME/$ROOT_PATH"
-        ErrorLog "|/var/log/apache2/$SERVICE_NAME-error_log 86400" common
-        CustomLog "|/var/log/apache2/$SERVICE_NAME-access_log 86400" common
+        DocumentRoot "/var/www/$SERVICE_NAME/$SERVICE_PATH"
+        ErrorLog "/var/log/apache2/$SERVICE_NAME-error_log"
+        CustomLog "/var/log/apache2/$SERVICE_NAME-access_log" common
 
         ProxyPassMatch ^/(.*\.php)$ fcgi://php:9000/var/www/$SERVICE_NAME/$SERVICE_PATH/$1
 

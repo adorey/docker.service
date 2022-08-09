@@ -7,7 +7,6 @@ ARG SERVICE_PATH
 ARG SERVICE_HOST
 ARG SERVICE_NAME
 ARG APP_MAINTAINER_EMAIL
-ARG APP_MAINTAINER_FULL_NAME
 
 # Install apache and supplimentary programs.gettext-base allow us to use envsubst to
 # replace environment in files, curl is for debugging the container.
@@ -35,18 +34,19 @@ ENV SERVICE_PATH ${SERVICE_PATH}
 ENV SERVICE_HOST ${SERVICE_HOST}
 ENV SERVICE_NAME ${SERVICE_NAME}
 ENV APP_MAINTAINER_EMAIL ${APP_MAINTAINER_EMAIL}
-ENV APP_MAINTAINER_FULL_NAME ${APP_MAINTAINER_FULL_NAME}
 
 # Expose apache.
 EXPOSE 80
 
 # Update the default apache site with the config we created.
-ADD sites-available/default.template /etc/apache2/sites-available/default.template
+ADD sites/default.template /etc/apache2/sites-available/default.template
 
 # create conf from template + environment and enable it
-RUN /bin/bash -c \
-    'envsubst < /etc/apache2/sites-available/default.template > /etc/apache2/sites-available/default.conf' \
-    && a2ensite default.conf
+RUN envsubst < /etc/apache2/sites-available/default.template > /etc/apache2/sites-available/${SERVICE_NAME}.conf \
+    && a2ensite ${SERVICE_NAME}.conf
+
+# restarting apache to apply our configuration
+RUN apache2ctl restart
 
 # By default start up apache in the foreground, override with /bin/bash for interative.
 CMD /usr/sbin/apache2ctl -D FOREGROUND
